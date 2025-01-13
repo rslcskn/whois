@@ -1,6 +1,16 @@
 {
+  "version": 2,
   "functions": {
-    "api/*.php": {
+    "api/index.php": {
+      "runtime": "vercel-php@0.6.0"
+    },
+    "api/register.php": {
+      "runtime": "vercel-php@0.6.0"
+    },
+    "api/config.php": {
+      "runtime": "vercel-php@0.6.0"
+    },
+    "api/Markdown.php": {
       "runtime": "vercel-php@0.6.0"
     }
   },
