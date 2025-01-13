@@ -18,7 +18,13 @@ RUN a2enmod rewrite
 
 # PHP yapılandırmasını özelleştir
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
+
+# PHP.ini ayarlarını doğrudan ekle
+RUN echo "upload_max_filesize = 64M" > /usr/local/etc/php/conf.d/custom.ini \
+    && echo "post_max_size = 64M" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "memory_limit = 256M" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "max_execution_time = 180" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "max_input_time = 180" >> /usr/local/etc/php/conf.d/custom.ini
 
 # Çalışma dizinini ayarla
 WORKDIR /var/www/html
@@ -33,8 +39,8 @@ RUN if [ -f "composer.json" ]; then composer install --no-dev --optimize-autoloa
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 755 /var/www/html
 
-# .env dosyasını yapılandır (eğer varsa)
-COPY .env.example .env
+# .env dosyasını .env.example'dan kopyalamak yerine mevcut .env dosyasını kullan
+COPY .env .env
 
 EXPOSE 80
 
