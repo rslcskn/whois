@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: whois
+    env: php
+    buildCommand: echo "Build complete"
+    startCommand: php -S 0.0.0.0:$PORT
+    envVars:
+      - key: PORT
+        value: 8080 
