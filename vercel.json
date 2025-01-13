@@ -1,0 +1,20 @@
+{
+  "functions": {
+    "*.php": {
+      "runtime": "vercel-php@0.6.0"
+    }
+  },
+  "routes": [
+    { "src": "/(.*)\\.php$", "dest": "/$1.php" },
+    { "src": "/(.*)", "dest": "/index.php" }
+  ],
+  "env": {
+    "APP_ENV": "production",
+    "APP_DEBUG": "false"
+  },
+  "build": {
+    "env": {
+      "PHP_VERSION": "8.1"
+    }
+  }
+} 

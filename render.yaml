@@ -1,8 +1,0 @@
-services:
-  - type: web
-    name: whois
-    env: docker
-    dockerfilePath: Dockerfile
-    envVars:
-      - key: PORT
-        value: 80 
