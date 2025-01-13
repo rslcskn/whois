@@ -61,10 +61,19 @@ if (isset($_GET['format']) && $_GET['format'] === 'json') {
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-2xl mx-auto">
             <div class="bg-white rounded-lg shadow-md p-6">
-                <h1 class="text-2xl font-bold text-center mb-6">
-                    <?php echo htmlspecialchars($domain); ?>
-                    <span class="text-green-500 text-sm ml-2">Kayıt Edilebilir</span>
-                </h1>
+                <div class="text-center mb-6">
+                    <h1 class="text-2xl font-bold mb-2">
+                        <?php echo htmlspecialchars($domain); ?>
+                    </h1>
+                    <div class="inline-flex items-center space-x-2">
+                        <span class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-sm font-medium">
+                            Kayıt Edilebilir
+                        </span>
+                        <span class="px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-sm">
+                            <?php echo strtoupper(pathinfo($domain, PATHINFO_EXTENSION)); ?>
+                        </span>
+                    </div>
+                </div>
 
                 <div class="space-y-4">
                     <?php foreach ($registrars as $registrar): ?>

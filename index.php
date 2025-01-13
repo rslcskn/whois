@@ -536,7 +536,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         const data = await response.json();
                         
                         targetElement.innerHTML = `
-                            <h3 class="text-lg font-semibold mb-4">Satın Alma Seçenekleri</h3>
+                            <div class="text-center mb-6">
+                                <h3 class="text-2xl font-bold mb-2">${domain}</h3>
+                                <div class="inline-flex items-center space-x-2">
+                                    <span class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-sm font-medium">
+                                        Kayıt Edilebilir
+                                    </span>
+                                    <span class="px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-sm">
+                                        ${domain.split('.').pop().toUpperCase()}
+                                    </span>
+                                </div>
+                            </div>
                             <div class="space-y-4">
                                 ${data.registrars.map(registrar => `
                                     <a href="${registrar.url}?domain=${domain}" target="_blank" 
