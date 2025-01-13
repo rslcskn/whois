@@ -1,9 +1,8 @@
 services:
   - type: web
     name: whois
-    env: php
-    buildCommand: echo "Build complete"
-    startCommand: php -S 0.0.0.0:$PORT
+    env: docker
+    dockerfilePath: Dockerfile
     envVars:
       - key: PORT
-        value: 8080 
+        value: 80 
