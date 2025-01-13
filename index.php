@@ -1,14 +1,11 @@
 <?php
 require_once 'config.php';
 
-// Default domain uzantıları
 $defaultTlds = ['.com', '.net', '.org', '.io', '.co', '.app'];
 
-// Kullanıcı tanımlı domain uzantılarını session'dan al
 session_start();
 $customTlds = isset($_SESSION['custom_tlds']) ? $_SESSION['custom_tlds'] : [];
 
-// Cache kontrolü için header'lar
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
@@ -17,24 +14,20 @@ $error = '';
 $results = [];
 $apiDebug = [];
 
-// AJAX isteğini kontrol et
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     header('Content-Type: application/json');
     
     if ($_POST['action'] === 'search') {
         $domain = isset($_POST['domain']) ? trim($_POST['domain']) : '';
         if (!empty($domain)) {
-            // Domain adından uzantıyı çıkar
             $domainName = preg_replace('/\.[a-z]{2,}$/', '', $domain);
             
-            // Tüm uzantılarla domain listesi oluştur
             $domainList = array_map(function($tld) use ($domainName) {
                 return $domainName . $tld;
             }, array_merge($defaultTlds, $customTlds));
 
             $apiUrl = WHOIS_API_ENDPOINT . '?domain=' . urlencode(implode(',', $domainList)) . '&sse=true&return_dates=true&return-prices=true';
             
-            // API Debug bilgilerini ekle
             $debug = [
                 'request' => [
                     'url' => $apiUrl,
@@ -58,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $responseHeader = substr($response, 0, $headerSize);
                 $responseBody = substr($response, $headerSize);
 
-                // SSE yanıtını işle
                 $lines = explode("\n", $responseBody);
                 $results = [];
                 $currentDomain = null;
@@ -486,7 +478,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         <div id="detailsOverlay"></div>
 
         <script>
-            // Loglama yardımcı fonksiyonu
+            
             function logDetails(title, data, type = 'info') {
                 const styles = {
                     info: 'color: #2563eb; font-weight: bold;',
@@ -540,31 +532,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
                 try {
                     if (isAvailable) {
-                        // Boşta olan domain için satın alma seçenekleri
+                        const response = await fetch(`register.php?domain=${domain}&format=json`);
+                        const data = await response.json();
+                        
                         targetElement.innerHTML = `
                             <h3 class="text-lg font-semibold mb-4">Satın Alma Seçenekleri</h3>
                             <div class="space-y-4">
-                                <a href="https://godaddy.com/domainsearch/find?domainToCheck=${domain}" target="_blank" 
-                                   class="block p-4 border rounded-lg hover:shadow-md transition-shadow">
-                                    <div class="flex items-center justify-between">
-                                        <span class="font-medium">GoDaddy</span>
-                                        <i class="fas fa-external-link-alt text-gray-400"></i>
-                                    </div>
-                                </a>
-                                <a href="https://www.namecheap.com/domains/registration/results/?domain=${domain}" target="_blank"
-                                   class="block p-4 border rounded-lg hover:shadow-md transition-shadow">
-                                    <div class="flex items-center justify-between">
-                                        <span class="font-medium">Namecheap</span>
-                                        <i class="fas fa-external-link-alt text-gray-400"></i>
-                                    </div>
-                                </a>
-                                <a href="https://domains.google.com/registrar/search?searchTerm=${domain}" target="_blank"
-                                   class="block p-4 border rounded-lg hover:shadow-md transition-shadow">
-                                    <div class="flex items-center justify-between">
-                                        <span class="font-medium">Google Domains</span>
-                                        <i class="fas fa-external-link-alt text-gray-400"></i>
-                                    </div>
-                                </a>
+                                ${data.registrars.map(registrar => `
+                                    <a href="${registrar.url}?domain=${domain}" target="_blank" 
+                                       class="block p-4 border rounded-lg hover:shadow-md transition-shadow">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-4">
+                                                <img src="${registrar.logo}" alt="${registrar.name}" class="w-8 h-8 object-contain">
+                                                <span class="font-medium">${registrar.name}</span>
+                                            </div>
+                                            <div class="flex items-center space-x-3">
+                                                <span class="text-green-600 font-bold">$${registrar.price}</span>
+                                                <i class="fas fa-external-link-alt text-gray-400"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                `).join('')}
                             </div>
                         `;
                     } else {

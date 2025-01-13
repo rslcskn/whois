@@ -7,7 +7,6 @@ if (empty($domain)) {
     exit;
 }
 
-// Domain uzantısına göre varsayılan fiyatı belirle
 $extension = strtolower(pathinfo($domain, PATHINFO_EXTENSION));
 $defaultPrice = match($extension) {
     'com' => DEFAULT_COM_PRICE,
@@ -20,22 +19,35 @@ $registrars = [
     [
         'name' => 'GoDaddy',
         'logo' => 'https://logo.clearbit.com/godaddy.com',
-        'url' => GODADDY_AFFILIATE_URL,
+        'url' => GODADDY_AFFILIATE_URL ?: 'https://godaddy.com/domainsearch/find',
         'price' => number_format($defaultPrice, 2)
     ],
     [
         'name' => 'Namecheap',
         'logo' => 'https://logo.clearbit.com/namecheap.com',
-        'url' => NAMECHEAP_AFFILIATE_URL,
+        'url' => NAMECHEAP_AFFILIATE_URL ?: 'https://www.namecheap.com/domains/registration/results',
         'price' => number_format($defaultPrice - 1, 2)
     ],
     [
         'name' => 'Google Domains',
         'logo' => 'https://logo.clearbit.com/domains.google',
-        'url' => GOOGLE_DOMAINS_AFFILIATE_URL,
+        'url' => GOOGLE_DOMAINS_AFFILIATE_URL ?: 'https://domains.google.com/registrar/search',
         'price' => number_format($defaultPrice + 2, 2)
     ]
 ];
+
+// AJAX isteği ise JSON döndür
+if (isset($_GET['format']) && $_GET['format'] === 'json') {
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => true,
+        'domain' => $domain,
+        'registrars' => $registrars
+    ]);
+    exit;
+}
+
+// Normal sayfa görüntüleme
 ?>
 <!DOCTYPE html>
 <html lang="tr">

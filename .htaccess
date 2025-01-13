@@ -1,11 +1,15 @@
 RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [QSA,L]
 
-# PHP hata raporlamasını kapatma
+# PHP hata gösterimi
 php_flag display_errors off
 
-# SSL yönlendirmesi
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301] 
+# Özel dosyalar için yönlendirme yok
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Ana yönlendirme kuralı
+RewriteRule ^([^/]+)/?$ index.php?domain=$1 [QSA,L]
+
+# Diğer tüm istekler için index.php
+RewriteRule ^$ index.php [L]
+
