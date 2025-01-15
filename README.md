@@ -23,7 +23,7 @@ Domain WHOIS bilgilerini anlık olarak sorgulayabileceğiniz, domain fiyatların
 
 1. Projeyi klonlayın:
 ```bash
-git clone https://github.com/kullaniciadi/whois.git
+git clone https://github.com/rslcskn/whois.git
 cd whois
 ```
 
